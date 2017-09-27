@@ -130,7 +130,7 @@ namespace Scheduler {
 			(instance->*func)(args...);
 		});
 	}
-	
+
 	//Takes in a member function and the object it is affiliated with
 	template <typename T,
 		typename ... Args>
@@ -268,6 +268,25 @@ namespace Scheduler {
 #endif
 
 		}
+	}
+
+	template <typename T,
+		typename ... Args>
+
+		/*
+		*    Adds a task.
+		*    @param 		 	policy	  	The policy.
+		*    @param 		 	priority  	The priority.
+		*    @param 		 	runsOnMain	True to runs on main.
+		*    @param [in,out]	instance  	If non-null, the instance.
+		*    @param [in,out]	func	  	If non-null, the function.
+		*/
+
+		void AddLoopedTask(FiberPolicy policy, FiberPriority priority, bool runsOnMain, Fn && fn, Args && ... args) {
+			
+		AddTask(policy, priority, runsOnMain, [=](Args... args) {
+			(instance->*func)(args...);
+		});
 	}
 
 	/* Blocks the fiber until all tasks with the LAUNCH_IMMEDIATE policy have been executed. */
