@@ -200,12 +200,19 @@ namespace Scheduler {
 				detail::InitPointers();
 
 				//yielding garuntees that the fiber properties are saved at the expense of another round of context switching
-				boost::this_fiber::properties< detail::FiberProperties >().SetPriority(priority, runsOnMain);
-				boost::this_fiber::yield();
+				//UNINTENDED BEHAVIOR
+				//boost::this_fiber::properties< detail::FiberProperties >().SetPriority(priority, runsOnMain);
+				//boost::this_fiber::yield();
 
 				//assert that the function is executing on the right thread
 				assert(!boost::this_fiber::properties< detail::FiberProperties >().RunOnMain() ||
 					(boost::this_fiber::properties< detail::FiberProperties >().RunOnMain() && detail::mainID == std::this_thread::get_id()));
+				//assert that the priority is right
+				std::ostringstream os_;    \
+				os_ << boost::this_fiber::properties< detail::FiberProperties >().GetPriority();       
+				std::wstring ws(os_.str().begin(), os_.str().end());
+				OutputDebugString(ws.c_str());
+				//assert(boost::this_fiber::properties< detail::FiberProperties >().GetPriority() == priority);
 
 #endif
 

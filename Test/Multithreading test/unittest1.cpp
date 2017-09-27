@@ -85,7 +85,7 @@ namespace Multithreadingtest
 			for (size_t i = 0; i < 100; i++)
 			{
 				Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, [&i, &a]() {
-					a.push_back(i);
+					a.push_back((int)(i));
 				});
 				Scheduler::Block();
 			}
@@ -97,6 +97,58 @@ namespace Multithreadingtest
 				Assert::AreEqual(int(i), a[i]);
 			}
 
+
+			Assert::IsTrue(true);
+		}
+		TEST_METHOD(fiber_properties_high_main)
+		{
+			//tests spawning a high priority thread that spawns on main
+			Scheduler::Initialize();
+
+			Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, true, []() {
+				mult(1, 1);
+			});
+
+			Scheduler::Terminate();
+
+			Assert::IsTrue(true);
+		}
+		TEST_METHOD(fiber_properties_high_other)
+		{
+			//tests spawning a high priority thread running not on main
+			Scheduler::Initialize();
+
+			Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_HIGH, false, []() {
+				mult(1, 1);
+			});
+
+			Scheduler::Terminate();
+
+			Assert::IsTrue(true);
+		}
+		TEST_METHOD(fiber_properties_low_main)
+		{
+			//tests spawning a low priority thread that spawns on main
+			Scheduler::Initialize();
+
+			Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_LOW, true, []() {
+				mult(1, 1);
+			});
+
+			Scheduler::Terminate();
+
+			Assert::IsTrue(true);
+		}
+		TEST_METHOD(fiber_properties_low_other)
+		{
+			//tests spawning a low priority thread that spawns not on main
+			Scheduler::Initialize();
+
+			Scheduler::AddTask(LAUNCH_IMMEDIATE, FIBER_LOW, false, []() {
+				mult(1, 1);
+			});
+
+			Scheduler::Terminate();
 
 			Assert::IsTrue(true);
 		}
