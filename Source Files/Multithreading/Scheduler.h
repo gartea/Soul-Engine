@@ -208,11 +208,10 @@ namespace Scheduler {
 				assert(!boost::this_fiber::properties< detail::FiberProperties >().RunOnMain() ||
 					(boost::this_fiber::properties< detail::FiberProperties >().RunOnMain() && detail::mainID == std::this_thread::get_id()));
 				//assert that the priority is right
-				std::ostringstream os_;    \
-				os_ << boost::this_fiber::properties< detail::FiberProperties >().GetPriority();       
-				std::wstring ws(os_.str().begin(), os_.str().end());
-				OutputDebugString(ws.c_str());
-				//assert(boost::this_fiber::properties< detail::FiberProperties >().GetPriority() == priority);
+				//Withot setpriority the FiberProperties priority will always be Fiber High (1)
+				//Withot setpriority the Fiber runs on main will always be set to false (1)
+				assert(boost::this_fiber::properties< detail::FiberProperties >().RunOnMain() == runsOnMain);
+				assert(boost::this_fiber::properties< detail::FiberProperties >().GetPriority() == priority);
 
 #endif
 
