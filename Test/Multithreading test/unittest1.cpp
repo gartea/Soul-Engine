@@ -13,9 +13,6 @@ void multBy(int& x, int multiplier) {
 	x = x*multiplier;
 }
 
-void multBy(std::vector<int>::iterator& x, int multiplier) {
-	*x = *x*multiplier;
-}
 
 namespace Multithreadingtest
 {		
@@ -119,7 +116,7 @@ namespace Multithreadingtest
 			std::vector<int>::iterator itr = a.begin();
 			std::vector<int>::iterator itr_end = a.end();
 			Scheduler::ParallelForEach(FIBER_HIGH, itr, itr_end, [&itr]() {
-				multBy(itr,2);
+				multBy(*itr,2);
 			});
 
 
