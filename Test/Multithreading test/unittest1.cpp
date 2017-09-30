@@ -9,6 +9,14 @@ void mult(int x, int y) {
 	int z = x*y;
 }
 
+void multBy(int& x, int multiplier) {
+	x = x*multiplier;
+}
+
+void multBy(std::vector<int>::iterator& x, int multiplier) {
+	*x = *x*multiplier;
+}
+
 namespace Multithreadingtest
 {		
 	TEST_CLASS(unittest1)
@@ -95,6 +103,31 @@ namespace Multithreadingtest
 			for (size_t i = 0; i < 100; i++)
 			{
 				Assert::AreEqual(int(i), a[i]);
+			}
+
+
+			Assert::IsTrue(true);
+		}
+		TEST_METHOD(Parallel_For)
+		{
+			//Tests blocking of execution until all launch immediate tasks are done
+			Scheduler::Initialize();
+
+			//due to block each task runs sequentially so a is in order
+			std::vector<int> a = { 0,1,2,3,4 };
+
+			std::vector<int>::iterator itr = a.begin();
+			std::vector<int>::iterator itr_end = a.end();
+			Scheduler::ParallelForEach(FIBER_HIGH, itr, itr_end, [&itr]() {
+				multBy(itr,2);
+			});
+
+
+			Scheduler::Terminate();
+
+			for (size_t i = 0; i < a.size(); i++)
+			{
+				Assert::AreEqual(int(i * 2), a[i]);
 			}
 
 

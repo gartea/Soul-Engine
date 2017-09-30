@@ -270,23 +270,31 @@ namespace Scheduler {
 		}
 	}
 
-	template <typename T,
+	template <typename Itr,
+		typename Fn,
 		typename ... Args>
 
 		/*
-		*    Adds a task.
-		*    @param 		 	policy	  	The policy.
+		*    Executes a for loop in parallel
+		*	 @param				iterator	an iterator for the iterable object
+		*	 @param				iterator	the iterator to stop execution
 		*    @param 		 	priority  	The priority.
-		*    @param 		 	runsOnMain	True to runs on main.
-		*    @param [in,out]	instance  	If non-null, the instance.
 		*    @param [in,out]	func	  	If non-null, the function.
 		*/
+		
 
-		void AddLoopedTask(FiberPolicy policy, FiberPriority priority, bool runsOnMain, Fn && fn, Args && ... args) {
-			
-		AddTask(policy, priority, runsOnMain, [=](Args... args) {
-			(instance->*func)(args...);
-		});
+		void ParallelForEach(FiberPriority priority, Itr& iterator, Itr& end, Fn && fn, Args && ... args) {
+		// Never runs on main
+		// Launch immediate runs for every task except the last one which runs on launch continue
+		while (iterator != end) {
+			AddTask(LAUNCH_IMMEDIATE, priority, false, [=](Args... args) {
+				(fn)(args...);
+			});
+			Block();
+			//fn(std::forward<Args>(args)...);
+			iterator++;
+		}
+		
 	}
 
 	/* Blocks the fiber until all tasks with the LAUNCH_IMMEDIATE policy have been executed. */
