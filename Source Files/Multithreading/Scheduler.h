@@ -270,7 +270,7 @@ namespace Scheduler {
 		}
 	}
 
-	template <typename Itr,
+	template <typename T,
 		typename Fn,
 		typename ... Args>
 
@@ -283,17 +283,19 @@ namespace Scheduler {
 		*/
 		
 
-		void ParallelForEach(FiberPriority priority, Itr& iterator, Itr& end, Fn && fn, Args && ... args) {
+		void ParallelForEach(FiberPriority priority, T& structure, Fn && fn, Args && ... args) {
 		// Never runs on main
 		// Launch immediate runs for every task except the last one which runs on launch continue
-		while (iterator != end) {
+		T::iterator itr = structure.begin();
+		while (itr != structure.end()) {
 			AddTask(LAUNCH_IMMEDIATE, priority, false, [=](Args... args) {
-				(fn)(args...);
+				(fn)(itr);
 			});
-			Block();
+			//Block();
 			//fn(std::forward<Args>(args)...);
-			iterator++;
+			itr++;
 		}
+		//Block();
 		
 	}
 

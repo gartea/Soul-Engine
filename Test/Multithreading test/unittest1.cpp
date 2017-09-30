@@ -114,8 +114,7 @@ namespace Multithreadingtest
 			std::vector<int> a = { 0,1,2,3,4 };
 
 			std::vector<int>::iterator itr = a.begin();
-			std::vector<int>::iterator itr_end = a.end();
-			Scheduler::ParallelForEach(FIBER_HIGH, itr, itr_end, [&itr]() {
+			Scheduler::ParallelForEach(FIBER_HIGH, a, [=](std::vector<int>::iterator&) {
 				multBy(*itr,2);
 			});
 
