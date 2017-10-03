@@ -280,20 +280,22 @@ namespace Scheduler {
 		*    @param 		 	priority  	The priority.
 		*    @param [in,out]	func	  	If non-null, the function.
 		*/
-		
+
 
 		void ParallelForEach(FiberPriority priority, T& structure, Fn && fn, Args && ... args) {
 		// Never runs on main
 		// Launch immediate runs for every task except the last one which runs on launch continue
 		T::iterator i = structure.begin();
 		while (i != structure.end()) {
-			AddTask(LAUNCH_IMMEDIATE, priority, false, [&](Args... args) mutable {
+			AddTask(LAUNCH_IMMEDIATE, priority, false, [fn,&i](Args... args) mutable {
 				(fn)(*i);
 			});
 			Block();
 			i++;
 		}
-		
+
+		Block();
+
 	}
 
 	/* Blocks the fiber until all tasks with the LAUNCH_IMMEDIATE policy have been executed. */
