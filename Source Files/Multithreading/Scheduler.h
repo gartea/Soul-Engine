@@ -283,19 +283,30 @@ namespace Scheduler {
 		*/
 		
 
+		//void ParallelForEach(FiberPriority priority, T& structure, Fn && fn, Args && ... args) {
+		//// Never runs on main
+		//// Launch immediate runs for every task except the last one which runs on launch continue
+		//T::iterator itr = structure.begin();
+		////int i = *itr;
+		//while (itr != structure.end()) {
+		//	AddTask(LAUNCH_IMMEDIATE, priority, false, [=](Args... args) mutable{
+		//		(fn)(itr);
+		//	});
+		//	Block();
+		//	//fn(std::forward<Args>(args)...);
+		//	itr++;
+		//}
 		void ParallelForEach(FiberPriority priority, T& structure, Fn && fn, Args && ... args) {
 		// Never runs on main
 		// Launch immediate runs for every task except the last one which runs on launch continue
-		T::iterator itr = structure.begin();
-		while (itr != structure.end()) {
-			AddTask(LAUNCH_IMMEDIATE, priority, false, [=](Args... args) {
-				(fn)(itr);
+		int i = 0;
+		while (i<structure.size()) {
+			AddTask(LAUNCH_IMMEDIATE, priority, false, [&](Args... args) mutable {
+				(fn)(&structure[i]);
 			});
-			//Block();
-			//fn(std::forward<Args>(args)...);
-			itr++;
+			Block();
+			i++;
 		}
-		//Block();
 		
 	}
 
