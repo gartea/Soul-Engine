@@ -276,8 +276,7 @@ namespace Scheduler {
 
 		/*
 		*    Executes a for loop in parallel
-		*	 @param				iterator	an iterator for the iterable object
-		*	 @param				iterator	the iterator to stop execution
+		*	 @param				structure	the data structure to iterate over
 		*    @param 		 	priority  	The priority.
 		*    @param [in,out]	func	  	If non-null, the function.
 		*/
@@ -289,7 +288,7 @@ namespace Scheduler {
 		T::iterator i = structure.begin();
 		while (i != structure.end()) {
 			AddTask(LAUNCH_IMMEDIATE, priority, false, [&](Args... args) mutable {
-				(fn)(&(*i));
+				(fn)(*i);
 			});
 			Block();
 			i++;

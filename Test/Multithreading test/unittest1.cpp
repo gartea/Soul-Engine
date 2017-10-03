@@ -113,8 +113,8 @@ namespace Multithreadingtest
 			//due to block each task runs sequentially so a is in order
 			std::vector<int> a = { 0,1,2,3,4 };
 
-			Scheduler::ParallelForEach(FIBER_HIGH, a, [=](/*std::vector<int>::iterator& itr*/ int* itr) {
-				multBy(*itr,2);
+			Scheduler::ParallelForEach(FIBER_HIGH, a, [=](int& itr) {
+				multBy(itr,2);
 			});
 
 
